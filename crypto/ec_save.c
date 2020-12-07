@@ -19,14 +19,14 @@ int ec_save(EC_KEY *key, char const *folder)
 		if (mkdir(folder, 0700) == -1)
 			return (0);
 	}
-	sprintf(file, "%s/%s", folder, PRI_FILENAME);
+	sprintf(file, "%s/%s", folder, PRV_FILE);
 	fp = fopen(file, "w");
 	if (!fp)
 		return (0);
 	if (!PEM_write_ECPrivateKey(fp, key, NULL, NULL, 0, NULL, NULL))
 		return (0);
 	fclose(fp);
-	sprintf(file, "%s/%s", folder, PUB_FILENAME);
+	sprintf(file, "%s/%s", folder, PUB_FILE);
 	fp = fopen(file, "w");
 	if (!fp)
 		return (0);
