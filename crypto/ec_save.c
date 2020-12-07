@@ -1,37 +1,40 @@
 #include "hblk_crypto.h"
 
 /**
- * ec_save - save pub/private key pair into a file
- * @key: key pair
- * @folder: directory where to store the file
- * Return: 1 on success, 0 on failure
+ * ec_save - a function that saves an existing EC key pair on the disk
+ * @key: points to the EC key pair to be saved on disk
+ * @folder: the path to the folder in which to save the keys
+ *
+ * Return: 1 or 0 upon success or failure
  */
 int ec_save(EC_KEY *key, char const *folder)
 {
-	char file[512] = {0};
 	FILE *fp;
-	struct stat st = {0};
+	char path[128] = {0};
 
 	if (!key || !folder)
 		return (0);
-	if (stat(folder, &st) == -1)
-	{
-		if (mkdir(folder, 0700) == -1)
-			return (0);
-	}
-	sprintf(file, "%s/%s", folder, PRV_FILE);
-	fp = fopen(file, "w");
+	mkdir(folder, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+
+	sprintf(path, "%s/" PRV_FILE, folder);
+	fp = fopen(path, "w");
 	if (!fp)
 		return (0);
 	if (!PEM_write_ECPrivateKey(fp, key, NULL, NULL, 0, NULL, NULL))
-		return (0);
+	{
+		/*fclose(fp);*/
+		/*return (0);*/
+	}
 	fclose(fp);
-	sprintf(file, "%s/%s", folder, PUB_FILE);
-	fp = fopen(file, "w");
+	sprintf(path, "%s/" PUB_FILE, folder);
+	fp = fopen(path, "w");
 	if (!fp)
 		return (0);
 	if (!PEM_write_EC_PUBKEY(fp, key))
+	{
+		fclose(fp);
 		return (0);
+	}
 	fclose(fp);
 	return (1);
 }
