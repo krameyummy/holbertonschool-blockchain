@@ -1,33 +1,34 @@
 #include "hblk_crypto.h"
 
 /**
- * ec_load - load an EC key pair from the disk
- * @folder: path to folder from which to load the keys
- *
- * Return: pointer to created EC key pair, NULL on error
+ * ec_load - load keys from a file
+ * @folder: folder where key pair is stored
+ * Return: EC_KEY key pair
  */
 EC_KEY *ec_load(char const *folder)
 {
 	EC_KEY *key = NULL;
-	char buf[BUFSIZ];
+	char file[512] = {0};
 	FILE *fp;
+	struct stat st;
 
-	if (!folder || strlen(folder) + strlen(PUB_FILENAME) > BUFSIZ)
+	if (!folder)
 		return (NULL);
-
-	sprintf(buf, "%s/%s", folder, PUB_FILENAME);
-	fp = fopen(buf, "r");
+	if (stat(folder, &st) == -1)
+		return (NULL);
+	sprintf(file, "./%s/%s", folder, PUB_FILENAME);
+	fp = fopen(file, "r");
 	if (!fp)
 		return (NULL);
 	if (!PEM_read_EC_PUBKEY(fp, &key, NULL, NULL))
-		goto out;
-	sprintf(buf, "%s/%s", folder, PRI_FILENAME);
-	fp = fopen(buf, "r");
+		return (NULL);
+	fclose(fp);
+	sprintf(file, "./%s/%s", folder, PRI_FILENAME);
+	fp = fopen(file, "r");
 	if (!fp)
 		return (NULL);
 	if (!PEM_read_ECPrivateKey(fp, &key, NULL, NULL))
-		goto out;
-out:
+		return (NULL);
 	fclose(fp);
 	return (key);
 }
