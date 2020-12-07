@@ -19,6 +19,8 @@
 #include <openssl/ssl.h>
 #include <openssl/pem.h>
 
+#define PUB_FILENAME "key_pub.pem"
+#define PRI_FILENAME "key.pem"
 
 # define EC_CURVE   NID_secp256k1
 
