@@ -37,7 +37,7 @@ int blockchain_serialize(blockchain_t const *blockchain, char const *path)
 	if (!blockchain || !path)
 		return (-1);
 	memcpy(header.hblk_magic, "HBLK", 4);
-	memcpy(header.hblk_version, "0.3", 3);
+	memcpy(header.hblk_version, "0.2", 3);
 	header.hblk_endian = _get_endianness();
 	header.hblk_blocks = llist_size(blockchain->chain);
 	if (header.hblk_blocks == -1)
