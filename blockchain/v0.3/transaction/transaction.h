@@ -111,4 +111,7 @@ void transaction_destroy(transaction_t *transaction);
 
 int filter_unspent(llist_node_t node, unsigned int idx, void *args);
 
+llist_t *update_unspent(llist_t *transactions,
+			uint8_t block_hash[SHA256_DIGEST_LENGTH], llist_t *all_unspent);
+
 #endif  /* __TRANSACTION_H_ */
